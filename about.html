@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — NY Dental Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">NY<em>Dental</em></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Directory</a>
+        <a href="map.html" class="nav-link">Map View</a>
+        <a href="about.html" class="nav-link active">About</a>
+      </div>
+      <div class="nav-badge">
+        <span class="badge-dot"></span>Live Data
+      </div>
+    </div>
+  </nav>
+
+  <main style="max-width:860px; margin:0 auto; padding:120px 24px 80px;">
+    <div style="margin-bottom:48px;">
+      <p style="font-family:var(--font-mono); font-size:0.8rem; color:var(--accent); letter-spacing:0.1em; margin-bottom:12px;">ABOUT THIS PROJECT</p>
+      <h1 style="font-family:var(--font-display); font-size:clamp(2rem,5vw,3.5rem); font-weight:900; color:var(--ink); line-height:1.1;">How We Built<br/><em>NY Dental Directory</em></h1>
+    </div>
+
+    <div class="about-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:56px;">
+      <div class="about-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🏛️</div>
+        <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--ink); margin-bottom:8px;">NPI Registry</h3>
+        <p style="font-size:0.9rem; color:var(--muted); line-height:1.7;">The primary source. Every licensed dentist in New York State is registered in the US federal National Provider Identifier database maintained by CMS. This is free, public, and official government data.</p>
+      </div>
+      <div class="about-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🗺️</div>
+        <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--ink); margin-bottom:8px;">Google Places API</h3>
+        <p style="font-size:0.9rem; color:var(--muted); line-height:1.7;">Secondary source enriching records with ratings, review counts, office hours, websites, and GPS coordinates from Google Maps — updated in real time.</p>
+      </div>
+      <div class="about-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">🔄</div>
+        <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--ink); margin-bottom:8px;">Auto De-duplication</h3>
+        <p style="font-size:0.9rem; color:var(--muted); line-height:1.7;">Records from both sources are matched by name, phone, and ZIP code. Where the same provider appears in both, the best available data from each source is merged into a single record.</p>
+      </div>
+      <div class="about-card" style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:28px;">
+        <div style="font-size:2rem; margin-bottom:12px;">⚡</div>
+        <h3 style="font-family:var(--font-display); font-size:1.2rem; color:var(--ink); margin-bottom:8px;">GitHub Backend</h3>
+        <p style="font-size:0.9rem; color:var(--muted); line-height:1.7;">All dentist data is stored as a JSON file in a public GitHub repository. The website fetches data directly from GitHub's raw content CDN — no server required, zero hosting cost.</p>
+      </div>
+    </div>
+
+    <h2 style="font-family:var(--font-display); font-size:1.8rem; color:var(--ink); margin-bottom:24px;">Fields Collected</h2>
+    <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin-bottom:56px;">
+      <table style="width:100%; border-collapse:collapse; font-size:0.88rem;">
+        <thead>
+          <tr style="background:var(--ink); color:white;">
+            <th style="padding:12px 16px; text-align:left; font-weight:600;">Field</th>
+            <th style="padding:12px 16px; text-align:center; font-weight:600;">NPI</th>
+            <th style="padding:12px 16px; text-align:center; font-weight:600;">Google</th>
+          </tr>
+        </thead>
+        <tbody id="fields-table">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <h2 style="font-family:var(--font-display); font-size:1.8rem; color:var(--ink); margin-bottom:24px;">How to Update the Data</h2>
+    <div style="background:#1a1a2e; border-radius:16px; padding:28px; margin-bottom:48px;">
+      <p style="color:#a0a8c0; font-size:0.85rem; margin-bottom:16px; font-family:var(--font-mono);"># 1. Run the Python scraper</p>
+      <p style="color:#4CAF50; font-family:var(--font-mono); font-size:0.9rem; margin-bottom:20px;">python Doctor.py</p>
+      <p style="color:#a0a8c0; font-size:0.85rem; margin-bottom:16px; font-family:var(--font-mono);"># 2. Convert the Excel output to JSON (using the converter script)</p>
+      <p style="color:#4CAF50; font-family:var(--font-mono); font-size:0.9rem; margin-bottom:20px;">python excel_to_json.py ny_dentists.xlsx data/dentists.json</p>
+      <p style="color:#a0a8c0; font-size:0.85rem; margin-bottom:16px; font-family:var(--font-mono);"># 3. Push to GitHub — the website auto-updates</p>
+      <p style="color:#4CAF50; font-family:var(--font-mono); font-size:0.9rem;">git add data/dentists.json && git commit -m "Update dentist data" && git push</p>
+    </div>
+
+    <div style="background:var(--accent-pale); border:1px solid var(--accent); border-radius:12px; padding:20px 24px; font-size:0.88rem; color:var(--muted); line-height:1.7;">
+      <strong style="color:var(--ink);">Disclaimer:</strong> This directory is for informational purposes only. Always verify provider details, insurance coverage, and availability directly with the dental practice. Data is sourced from the US NPI Registry and Google Places API and may not reflect the most current practice information.
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="nav-logo"><span class="logo-icon">✦</span><span class="logo-text">NY<em>Dental</em></span></span>
+        <p>Data sourced from the US NPI Registry &amp; Google Places API. Updated March 2026.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Directory</a>
+        <a href="map.html">Map View</a>
+        <a href="about.html">About</a>
+        <a href="https://npiregistry.cms.hhs.gov" target="_blank" rel="noopener">NPI Registry ↗</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const fields = [
+      ["Full Name", true, true], ["First / Last Name", true, false],
+      ["Degree (DDS/DMD)", true, false], ["Specialty", true, "partial"],
+      ["Practice Name", true, true], ["Full Address", true, true],
+      ["Borough", true, true], ["ZIP Code", true, true],
+      ["Phone Number", true, true], ["Website", false, true],
+      ["Email Address", false, false], ["Accepting New Patients", false, false],
+      ["Office Hours", false, true], ["Rating (Stars)", false, true],
+      ["Review Count", false, true], ["GPS Coordinates", false, true],
+      ["NPI Number", true, false], ["Gender", true, false],
+      ["State License #", true, false], ["Languages Spoken", false, false],
+    ];
+    const tbody = document.getElementById('fields-table');
+    fields.forEach(([name, npi, goo], i) => {
+      const tick = v => v === true ? '<span style="color:#4CAF50;font-weight:700;">✓</span>'
+        : v === 'partial' ? '<span style="color:#E67E22;font-weight:700;">~</span>'
+        : '<span style="color:#ccc;">—</span>';
+      tbody.innerHTML += `<tr style="background:${i%2===0?'var(--bg)':'var(--surface)'}; border-bottom:1px solid var(--border);">
+        <td style="padding:10px 16px; color:var(--ink);">${name}</td>
+        <td style="padding:10px 16px; text-align:center;">${tick(npi)}</td>
+        <td style="padding:10px 16px; text-align:center;">${tick(goo)}</td>
+      </tr>`;
+    });
+
+    // Scroll nav
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 20);
+    });
+  </script>
+</body>
+</html>

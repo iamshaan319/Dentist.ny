@@ -16,7 +16,7 @@
 //  CONFIGURATION — Update this URL after pushing to GitHub
 // ══════════════════════════════════════════════════════════════════
 const GITHUB_DATA_URL =
-  'https://github.com/iamshaan319/Dentist.ny/edit/main/app.js';
+  'https://raw.githubusercontent.com/iamshaan319/Dentist.ny/main/data/dentists.json';
 
 // Fallback: load from local data/ folder (works when running locally)
 const LOCAL_DATA_URL = 'data/dentists.json';

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Map View — NY Dental Directory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { overflow: hidden; }
+    .map-layout { display: flex; height: calc(100vh - 64px); margin-top: 64px; }
+    #map { flex: 1; z-index: 1; }
+    .map-sidebar {
+      width: 360px; min-width: 320px; background: var(--bg);
+      border-left: 1px solid var(--border); overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .map-sidebar-header {
+      padding: 20px 24px 16px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--bg); z-index: 10;
+    }
+    .map-sidebar-header h2 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 10px; color: var(--ink); }
+    .map-search { width: 100%; padding: 10px 14px; border: 1px solid var(--border);
+      border-radius: 8px; font-family: var(--font-body); font-size: 0.9rem;
+      background: var(--surface); color: var(--ink); outline: none; }
+    .map-search:focus { border-color: var(--accent); }
+    .map-list { flex: 1; padding: 12px; }
+    .map-card {
+      padding: 14px 16px; border-radius: 10px; cursor: pointer;
+      border: 1px solid var(--border); margin-bottom: 8px;
+      transition: all 0.18s ease; background: var(--surface);
+    }
+    .map-card:hover, .map-card.active { border-color: var(--accent); background: var(--accent-pale); }
+    .map-card-name { font-weight: 600; font-size: 0.92rem; color: var(--ink); margin-bottom: 2px; }
+    .map-card-spec { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+    .map-card-meta { display: flex; gap: 12px; font-size: 0.78rem; color: var(--muted); }
+    .map-card-meta span { display: flex; align-items: center; gap: 4px; }
+    .leaflet-popup-content-wrapper { border-radius: 12px !important; box-shadow: 0 8px 32px rgba(0,0,0,0.15) !important; }
+    .leaflet-popup-content { margin: 0 !important; padding: 0 !important; }
+    .popup-inner { padding: 16px 18px; min-width: 220px; }
+    .popup-name { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 1rem; color: #1a1a2e; margin-bottom: 2px; }
+    .popup-spec { font-size: 0.8rem; color: #666; margin-bottom: 8px; }
+    .popup-row { font-size: 0.8rem; color: #444; margin-bottom: 3px; }
+    .popup-btn { display: block; margin-top: 10px; text-align: center; padding: 7px 14px;
+      background: #C8953A; color: white; border-radius: 6px; text-decoration: none;
+      font-size: 0.8rem; font-weight: 600; cursor: pointer; border: none; width: 100%; }
+    @media (max-width: 768px) {
+      .map-layout { flex-direction: column; }
+      .map-sidebar { width: 100%; height: 280px; border-left: none; border-top: 1px solid var(--border); }
+      #map { flex: none; height: calc(100% - 280px); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">NY<em>Dental</em></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link">Directory</a>
+        <a href="map.html" class="nav-link active">Map View</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-badge">
+        <span class="badge-dot"></span>
+        <span id="total-count">—</span> dentists
+      </div>
+    </div>
+  </nav>
+
+  <div class="map-layout">
+    <div id="map"></div>
+    <aside class="map-sidebar">
+      <div class="map-sidebar-header">
+        <h2>NYC Dentists</h2>
+        <input type="text" class="map-search" id="map-search" placeholder="Search by name or specialty…" />
+      </div>
+      <div class="map-list" id="map-list"></div>
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+  <script>
+    // Map initialisation (runs after app.js loads data)
+    window.initMap = function(dentists) {
+      const map = L.map('map').setView([40.7128, -74.0060], 11);
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+        attribution: '© OpenStreetMap contributors © CARTO', maxZoom: 19
+      }).addTo(map);
+
+      const markerIcon = (color) => L.divIcon({
+        className: '',
+        html: `<div style="width:28px;height:28px;border-radius:50% 50% 50% 0;background:${color};
+               transform:rotate(-45deg);border:2px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3)">
+               </div>`,
+        iconSize: [28, 28], iconAnchor: [14, 28]
+      });
+
+      const colors = {
+        'General Dentistry':'#C8953A','Orthodontics':'#4A90D9',
+        'Pediatric Dentistry':'#E87D5B','Periodontics':'#6B8F71',
+        'Cosmetic Dentistry':'#9B6DB5','Endodontics':'#D4545A',
+        'Oral Surgery':'#3D6B8A','Prosthodontics':'#7A9E7E'
+      };
+
+      const markers = {};
+      const mapCards = {};
+
+      dentists.forEach(d => {
+        if (!d.latitude || !d.longitude) return;
+        const color = colors[d.specialty] || '#C8953A';
+        const marker = L.marker([d.latitude, d.longitude], { icon: markerIcon(color) })
+          .addTo(map)
+          .bindPopup(`
+            <div class="popup-inner">
+              <div class="popup-name">${d.name}</div>
+              <div class="popup-spec">${d.specialty} · ${d.borough}</div>
+              <div class="popup-row">📍 ${d.address}</div>
+              <div class="popup-row">📞 ${d.phone}</div>
+              <div class="popup-row">⭐ ${d.rating} (${d.review_count} reviews)</div>
+              <button class="popup-btn" onclick="window.openModal(${d.id})">View Profile</button>
+            </div>`);
+        markers[d.id] = marker;
+
+        const card = document.createElement('div');
+        card.className = 'map-card';
+        card.innerHTML = `
+          <div class="map-card-name">${d.name}</div>
+          <div class="map-card-spec">${d.specialty}</div>
+          <div class="map-card-meta">
+            <span>📍 ${d.borough}</span>
+            <span>⭐ ${d.rating}</span>
+            ${d.accepting_new_patients ? '<span style="color:#4CAF50">● Accepting</span>' : '<span style="color:#aaa">● Full</span>'}
+          </div>`;
+        card.addEventListener('click', () => {
+          Object.values(mapCards).forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          map.setView([d.latitude, d.longitude], 15);
+          marker.openPopup();
+        });
+        document.getElementById('map-list').appendChild(card);
+        mapCards[d.id] = card;
+      });
+
+      // Sidebar search
+      document.getElementById('map-search').addEventListener('input', e => {
+        const q = e.target.value.toLowerCase();
+        Object.values(mapCards).forEach(c => {
+          const name = c.querySelector('.map-card-name').textContent.toLowerCase();
+          const spec = c.querySelector('.map-card-spec').textContent.toLowerCase();
+          c.style.display = name.includes(q) || spec.includes(q) ? '' : 'none';
+        });
+      });
+
+      document.getElementById('total-count').textContent = dentists.length;
+    };
+  </script>
+</body>
+</html>

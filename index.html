@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NY Dental Directory — Find Your Dentist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────────── -->
+  <nav class="nav" id="nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-icon">✦</span>
+        <span class="logo-text">NY<em>Dental</em></span>
+      </a>
+      <div class="nav-links">
+        <a href="index.html" class="nav-link active">Directory</a>
+        <a href="map.html" class="nav-link">Map View</a>
+        <a href="about.html" class="nav-link">About</a>
+      </div>
+      <div class="nav-badge">
+        <span class="badge-dot"></span>
+        <span id="total-count">—</span> dentists
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────────────────── -->
+  <header class="hero">
+    <div class="hero-bg">
+      <div class="hero-grid"></div>
+      <div class="hero-blob hero-blob-1"></div>
+      <div class="hero-blob hero-blob-2"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="eyebrow-tag">New York City</span>
+        <span class="eyebrow-divider">·</span>
+        <span class="eyebrow-tag">All 5 Boroughs</span>
+        <span class="eyebrow-divider">·</span>
+        <span class="eyebrow-tag">Verified Data</span>
+      </div>
+      <h1 class="hero-title">
+        Find the Right<br />
+        <em>Dentist</em> in NYC
+      </h1>
+      <p class="hero-sub">Search across all specialties, boroughs, and languages. Data sourced directly from the US National Provider Registry.</p>
+      <div class="hero-search-wrap">
+        <div class="search-box">
+          <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="text" id="search-input" placeholder="Search by name, specialty, or location…" autocomplete="off" />
+          <button class="search-clear" id="search-clear" aria-label="Clear search">×</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num" id="stat-total">—</span>
+        <span class="stat-label">Dentists</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">5</span>
+        <span class="stat-label">Boroughs</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">10+</span>
+        <span class="stat-label">Specialties</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">15+</span>
+        <span class="stat-label">Languages</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── FILTER BAR ───────────────────────────────────────────────────── -->
+  <section class="filter-bar" id="filter-bar">
+    <div class="filter-inner">
+      <div class="filter-group">
+        <label class="filter-label">Borough</label>
+        <div class="pill-group" id="filter-borough">
+          <button class="pill active" data-value="">All</button>
+          <button class="pill" data-value="Manhattan">Manhattan</button>
+          <button class="pill" data-value="Brooklyn">Brooklyn</button>
+          <button class="pill" data-value="Queens">Queens</button>
+          <button class="pill" data-value="Bronx">Bronx</button>
+          <button class="pill" data-value="Staten Island">Staten Island</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Specialty</label>
+        <select class="filter-select" id="filter-specialty">
+          <option value="">All Specialties</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Sort By</label>
+        <select class="filter-select" id="filter-sort">
+          <option value="name">Name A–Z</option>
+          <option value="rating">Highest Rated</option>
+          <option value="experience">Most Experienced</option>
+          <option value="reviews">Most Reviews</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label">Availability</label>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="filter-accepting" />
+          <span class="toggle"></span>
+          <span class="toggle-label">Accepting Patients</span>
+        </label>
+      </div>
+      <button class="filter-reset" id="filter-reset">Reset filters</button>
+    </div>
+  </section>
+
+  <!-- ── RESULTS ──────────────────────────────────────────────────────── -->
+  <main class="main-content">
+    <div class="results-header">
+      <p class="results-count" id="results-count">Loading…</p>
+      <div class="view-toggle">
+        <button class="view-btn active" id="view-grid" title="Grid view">
+          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        </button>
+        <button class="view-btn" id="view-list" title="List view">
+          <svg viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="2" width="14" height="2" rx="1"/><rect x="1" y="7" width="14" height="2" rx="1"/><rect x="1" y="12" width="14" height="2" rx="1"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="cards-grid" id="cards-container">
+      <!-- Cards injected by JS -->
+    </div>
+
+    <div class="no-results hidden" id="no-results">
+      <div class="no-results-icon">🦷</div>
+      <h3>No dentists found</h3>
+      <p>Try adjusting your filters or search term.</p>
+      <button class="btn-outline" id="no-results-reset">Clear all filters</button>
+    </div>
+
+    <div class="loader" id="loader">
+      <div class="loader-teeth">
+        <div class="tooth"></div>
+        <div class="tooth"></div>
+        <div class="tooth"></div>
+      </div>
+      <p>Loading dentists…</p>
+    </div>
+  </main>
+
+  <!-- ── MODAL ────────────────────────────────────────────────────────── -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close" aria-label="Close">×</button>
+      <div class="modal-body" id="modal-body">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ───────────────────────────────────────────────────────── -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span class="nav-logo"><span class="logo-icon">✦</span><span class="logo-text">NY<em>Dental</em></span></span>
+        <p>Data sourced from the US NPI Registry &amp; Google Places API. Updated March 2026.</p>
+      </div>
+      <div class="footer-links">
+        <a href="index.html">Directory</a>
+        <a href="map.html">Map View</a>
+        <a href="about.html">About</a>
+        <a href="https://npiregistry.cms.hhs.gov" target="_blank" rel="noopener">NPI Registry ↗</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>For informational purposes only. Always verify provider details directly.</span>
+      <span id="footer-updated"></span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
